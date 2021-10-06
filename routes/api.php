@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('user/', [
+Route::get('users/', [
     UserController::class, 'index'
 ]);
 
