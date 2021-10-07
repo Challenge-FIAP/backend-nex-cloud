@@ -23,8 +23,10 @@ class CreateUsersTable extends Migration
             $table->string('mother_name')->nullable();
             $table->string('marital_status')->nullable();
             $table->string('education_level')->nullable();
-            $table->integer('phone')->nullable();
-            $table->integer('document')->nullable();
+            $table->string('phone')->nullable();
+            //$table->integer('phone')->nullable();
+            $table->string('document')->nullable();
+            //$table->integer('document')->nullable();
             $table->integer('address')->nullable();
             $table->integer('score')->nullable();
             $table->string('password')->nullable();
