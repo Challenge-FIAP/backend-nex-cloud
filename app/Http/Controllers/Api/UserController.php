@@ -50,7 +50,8 @@ class UserController extends Controller
         }
 
         return new UserResource(
-            $usuario
+            $usuario,
+            $usuario->document
         );
     }
 
