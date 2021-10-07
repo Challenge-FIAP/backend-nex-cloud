@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\User\StoreUserService;
-use App\Services\User\UpdateUserService;
+use App\Services\User\UpdateDocumentAndNameService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
@@ -54,10 +54,10 @@ class UserController extends Controller
         );
     }
 
-    public function update(
+    public function updateDocumentAndName(
         Request $request,
         string $id,
-        UpdateUserService $service
+        UpdateDocumentAndNameService $service
     ): UserResource | JsonResponse {
         $service
             ->handle($request, $id);

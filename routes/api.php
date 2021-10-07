@@ -27,8 +27,8 @@ Route::post('user/', [
     UserController::class, 'store'
 ]);
 
-Route::put('user/{id}', [
-    UserController::class, 'update'
+Route::put('user/{id}/document-name', [
+    UserController::class, 'updateDocumentAndName'
 ]);
 
 Route::delete('user/{id}', [

@@ -5,7 +5,7 @@ namespace App\Services\User;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-class UpdateUserService
+class UpdateDocumentAndNameService
 {
     private string $uid;
     private Request $request;
