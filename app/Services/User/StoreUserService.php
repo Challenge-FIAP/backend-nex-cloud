@@ -57,11 +57,11 @@ class StoreUserService
 
     private function makeUid(): StoreUserService
     {
-        $uID = substr(md5(rand(1, 100)), 0, 10);
+        $uID = substr(md5(rand(1, 1000000000)), 0, 10);
         $uID .= '-';
-        $uID .= substr(md5(rand(1, 100)), 0, 10);
+        $uID .= substr(md5(rand(1, 1000000000)), 0, 10);
         $uID .= '-';
-        $uID .= substr(md5(rand(1, 100)), 0, 10);
+        $uID .= substr(md5(rand(1, 1000000000)), 0, 10);
 
         $this->uID = $uID;
 
