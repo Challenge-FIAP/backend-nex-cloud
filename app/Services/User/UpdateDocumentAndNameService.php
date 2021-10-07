@@ -2,6 +2,8 @@
 
 namespace App\Services\User;
 
+use App\Helpers\ValidateDocument;
+use App\Models\Document;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -11,6 +13,7 @@ class UpdateDocumentAndNameService
     private Request $request;
 
     private User $user;
+    private Document $document;
 
     private bool $status;
     private string $message;
@@ -40,7 +43,21 @@ class UpdateDocumentAndNameService
         }
 
         $this
-            ->updateUserData();
+            ->valideAndSetName();
+
+        if (!$this->status) {
+            return;
+        }
+
+        $this
+            ->handleDocument();
+
+        if (!$this->status) {
+            return;
+        }
+
+        $this
+            ->persistUser();
     }
 
     private function setUser(): void
@@ -48,22 +65,56 @@ class UpdateDocumentAndNameService
         $user = User::firstWhere('uid', $this->uid);
 
         if (is_null($user)) {
-            $this->status = false;
-            $this->message = "Usuário tá inválido, cara, arruma esse UID aí, pô";
-
+            $this->setError('Usuário tá inválido, cara, arruma esse UID aí, pô');
             return;
         }
 
         $this->user = $user;
     }
 
-    private function updateUserData(): void
+    private function valideAndSetName(): void
     {
-        $this->user->social_name = $this->request->social_name ?? null;
-        $this->user->phone = $this->request->phone ?? null;
-        $this->user->document = $this->request->document ?? null;
+        $name = $this->request->social_name;
 
+        if (is_null($name)) {
+            $this->setError('Usuário não informado');
+            return;
+        }
+
+        $this->user->social_name = $name;
+    }
+
+    private function handleDocument(): void
+    {
+        $validate = new ValidateDocument();
+        $validadeResult = $validate->handle($this->request->document);
+
+        if (!$validadeResult['is_valid']) {
+            $this->setError('Documento inválido');
+            return;
+        }
+
+        if (!is_null(Document::firstWhere('number', $validadeResult['number']))) {
+            $this->setError('Documento já possui cadastro');
+            return;
+        }
+
+        $this->document = Document::create([
+            'number'          => $validadeResult['number'],
+            'type_person'     => $validadeResult['type'],
+        ]);
+    }
+
+    private function persistUser(): void
+    {
+        $this->user->document_id = $this->document->id;
         $this->user->save();
+    }
+
+    private function setError(string $message): void
+    {
+        $this->status = false;
+        $this->message = $message;
     }
 
     public function status(): bool
