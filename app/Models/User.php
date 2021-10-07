@@ -29,7 +29,8 @@ class User extends Authenticatable
         'mother_name',
         'marital_status',
         'education_level',
-        'password'
+        'password',
+        'document_id',
     ];
 
     /**
