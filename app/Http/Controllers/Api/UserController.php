@@ -36,15 +36,22 @@ class UserController extends Controller
         return new UserResource($service->getUser());
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function show($id)
+    public function show($id): UserResource | JsonResponse
     {
-        //
+        $usuario = User::firstWhere('uid', $id);
+        if (is_null($usuario)) {
+            return response()->json(
+                [
+                    'code'      => 400,
+                    'message'   => 'Usuário inválido',
+                ],
+                400
+            );
+        }
+
+        return new UserResource(
+            $usuario
+        );
     }
 
     public function update(
