@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\User\StoreUserService;
+use App\Services\User\UpdateUserService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -23,7 +25,7 @@ class UserController extends Controller
     public function store(
         Request $request,
         StoreUserService $service
-    ) {
+    ): UserResource | Response | Application | ResponseFactory {
         $service
             ->handle($request);
 
@@ -45,16 +47,27 @@ class UserController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update(
+        Request $request,
+        string $id,
+        UpdateUserService $service
+    ): UserResource | JsonResponse {
+        $service
+            ->handle($request, $id);
+
+        if (!$service->status()) {
+            return response()->json(
+                [
+                    'code'      => 400,
+                    'message'   => $service->getMessage(),
+                ],
+                400
+            );
+        }
+
+        return new UserResource(
+            $service->getUser()
+        );
     }
 
     /**
