@@ -5,20 +5,13 @@ namespace App\Services\User;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-class StoreUserService
+class StoreUserService extends Message
 {
     private Request $request;
-
-    private bool $status;
 
     private User $user;
     private string $date;
     private string $uID;
-
-    public function __construct()
-    {
-        $this->status = true;
-    }
 
     public function handle(Request $request): void
     {
@@ -80,10 +73,5 @@ class StoreUserService
     public function getUser(): User
     {
         return $this->user;
-    }
-
-    public function status(): bool
-    {
-        return $this->status;
     }
 }

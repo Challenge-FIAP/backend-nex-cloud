@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Services\RegistrationQuery\PersistDataQueryService;
 use Illuminate\Http\Request;
 
-class UpdateDocumentAndNameService
+class UpdateDocumentAndNameService extends Message
 {
     // Dados enviados
     private string $uid;
@@ -18,16 +18,11 @@ class UpdateDocumentAndNameService
     private User $user;
     private Document $document;
 
-    // Helpers
-    private bool $status;
-    private string $message;
-
     // Service
     private PersistDataQueryService $persistDataQueryService;
 
     public function __construct()
     {
-        $this->status = true;
         $this->persistDataQueryService = new PersistDataQueryService();
     }
 
@@ -46,21 +41,21 @@ class UpdateDocumentAndNameService
         $this
             ->setUser();
 
-        if (!$this->status) {
+        if (!$this->status()) {
             return;
         }
 
         $this
             ->valideAndSetName();
 
-        if (!$this->status) {
+        if (!$this->status()) {
             return;
         }
 
         $this
             ->handleDocument();
 
-        if (!$this->status) {
+        if (!$this->status()) {
             return;
         }
 
@@ -127,22 +122,6 @@ class UpdateDocumentAndNameService
         $this
             ->persistDataQueryService
             ->handle($this->user);
-    }
-
-    private function setError(string $message): void
-    {
-        $this->status = false;
-        $this->message = $message;
-    }
-
-    public function status(): bool
-    {
-        return $this->status;
-    }
-
-    public function getMessage(): string
-    {
-        return $this->message;
     }
 
     public function getUser(): User
