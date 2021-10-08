@@ -7,6 +7,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\User\StoreUserService;
 use App\Services\User\UpdateDocumentAndNameService;
+use App\Services\User\UpdateEmailAndPhone;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
@@ -19,7 +20,13 @@ class UserController extends Controller
     public function index(): AnonymousResourceCollection
     {
         $user = User::paginate(15);
-        return UserResource::collection($user);
+        return UserResource::collection(
+            $user,
+            $user->document ?? null,
+            $user->address ?? null,
+            $user->credit ?? null,
+            $user->phone ?? null
+        );
     }
 
     public function store(
@@ -33,13 +40,21 @@ class UserController extends Controller
             return response(null, 400);
         }
 
-        return new UserResource($service->getUser());
+        $user = $service->getUser();
+
+        return new UserResource(
+            $user,
+            $user->document ?? null,
+            $user->address ?? null,
+            $user->credit ?? null,
+            $user->phone ?? null
+        );
     }
 
     public function show($id): UserResource | JsonResponse
     {
-        $usuario = User::firstWhere('uid', $id);
-        if (is_null($usuario)) {
+        $user = User::firstWhere('uid', $id);
+        if (is_null($user)) {
             return response()->json(
                 [
                     'code'      => 400,
@@ -50,8 +65,11 @@ class UserController extends Controller
         }
 
         return new UserResource(
-            $usuario,
-            $usuario->document
+            $user,
+            $user->document ?? null,
+            $user->address ?? null,
+            $user->credit ?? null,
+            $user->phone ?? null
         );
     }
 
@@ -73,8 +91,43 @@ class UserController extends Controller
             );
         }
 
+        $user = $service->getUser();
+
         return new UserResource(
-            $service->getUser()
+            $user,
+            $user->document ?? null,
+            $user->address ?? null,
+            $user->credit ?? null,
+            $user->phone ?? null
+        );
+    }
+
+    public function updateEmailAndPhone(
+        Request $request,
+        string $id,
+        UpdateEmailAndPhone $service
+    ): UserResource | JsonResponse {
+        $service
+            ->handle($request, $id);
+
+        if (!$service->status()) {
+            return response()->json(
+                [
+                    'code'      => 400,
+                    'message'   => $service->getMessage(),
+                ],
+                400
+            );
+        }
+
+        $user = $service->getUser();
+
+        return new UserResource(
+            $user,
+            $user->document ?? null,
+            $user->address ?? null,
+            $user->credit ?? null,
+            $user->phone ?? null
         );
     }
 
