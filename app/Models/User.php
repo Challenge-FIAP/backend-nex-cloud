@@ -15,11 +15,6 @@ class User extends Authenticatable
     use HasFactory;
     use Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var string[]
-     */
     protected $fillable = [
         'uid',
         'date_accept_terms',
@@ -32,13 +27,10 @@ class User extends Authenticatable
         'education_level',
         'password',
         'document_id',
+        'address_id',
+        'credit_id',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password',
         'remember_token',
