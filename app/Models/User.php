@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -86,6 +87,15 @@ class User extends Authenticatable
                 Phone::class,
                 'id',
                 'phone_id'
+            );
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this
+            ->belongsTo(
+                EmailConfirmation::class,
+                'id'
             );
     }
 }
