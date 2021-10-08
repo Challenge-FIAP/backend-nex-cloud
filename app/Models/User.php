@@ -29,6 +29,7 @@ class User extends Authenticatable
         'document_id',
         'address_id',
         'credit_id',
+        'phone_id',
     ];
 
     protected $hidden = [
@@ -36,6 +37,7 @@ class User extends Authenticatable
         'document_id',
         'address_id',
         'credit_id',
+        'phone_id',
     ];
 
     /**
@@ -74,6 +76,16 @@ class User extends Authenticatable
                 Address::class,
                 'id',
                 'address_id'
+            );
+    }
+
+    public function phone(): HasOne
+    {
+        return $this
+            ->hasOne(
+                Phone::class,
+                'id',
+                'phone_id'
             );
     }
 }
