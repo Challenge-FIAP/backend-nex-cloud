@@ -5,22 +5,30 @@ namespace App\Services\User;
 use App\Helpers\ValidateDocument;
 use App\Models\Document;
 use App\Models\User;
+use App\Services\RegistrationQuery\PersistDataQueryService;
 use Illuminate\Http\Request;
 
 class UpdateDocumentAndNameService
 {
+    // Dados enviados
     private string $uid;
     private Request $request;
 
+    // Modelos
     private User $user;
     private Document $document;
 
+    // Helpers
     private bool $status;
     private string $message;
+
+    // Service
+    private PersistDataQueryService $persistDataQueryService;
 
     public function __construct()
     {
         $this->status = true;
+        $this->persistDataQueryService = new PersistDataQueryService();
     }
 
     public function handle(Request $request, string $uid)
@@ -57,7 +65,8 @@ class UpdateDocumentAndNameService
         }
 
         $this
-            ->persistUser();
+            ->persistUser()
+            ->persistOtherUserData();
     }
 
     private function setUser(): void
@@ -105,10 +114,19 @@ class UpdateDocumentAndNameService
         ]);
     }
 
-    private function persistUser(): void
+    private function persistUser(): UpdateDocumentAndNameService
     {
         $this->user->document_id = $this->document->id;
         $this->user->save();
+
+        return $this;
+    }
+
+    private function persistOtherUserData(): void
+    {
+        $this
+            ->persistDataQueryService
+            ->handle($this->user);
     }
 
     private function setError(string $message): void
