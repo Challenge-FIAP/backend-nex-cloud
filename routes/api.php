@@ -31,6 +31,10 @@ Route::put('user/{id}/document-name', [
     UserController::class, 'updateDocumentAndName'
 ]);
 
+Route::put('user/{id}/email-phone', [
+    UserController::class, 'updateEmailAndPhone'
+]);
+
 Route::delete('user/{id}', [
     UserController::class, 'destroy'
 ]);
