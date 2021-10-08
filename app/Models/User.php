@@ -54,4 +54,24 @@ class User extends Authenticatable
                 'document_id'
             );
     }
+
+    public function credit(): HasOne
+    {
+        return $this
+            ->hasOne(
+                Credit::class,
+                'id',
+                'credit_id'
+            );
+    }
+
+    public function address(): HasOne
+    {
+        return $this
+            ->hasOne(
+                Address::class,
+                'id',
+                'address_id'
+            );
+    }
 }
