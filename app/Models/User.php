@@ -4,33 +4,41 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var string[]
-     */
     protected $fillable = [
+        'uid',
+        'date_accept_terms',
+        'social_name',
         'name',
         'email',
+        'birth_date',
+        'mother_name',
+        'marital_status',
+        'education_level',
         'password',
+        'document_id',
+        'address_id',
+        'credit_id',
+        'phone_id',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password',
-        'remember_token',
+        'document_id',
+        'address_id',
+        'credit_id',
+        'phone_id',
     ];
 
     /**
@@ -41,4 +49,53 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function document(): HasOne
+    {
+        return $this
+            ->hasOne(
+                Document::class,
+                'id',
+                'document_id'
+            );
+    }
+
+    public function credit(): HasOne
+    {
+        return $this
+            ->hasOne(
+                Credit::class,
+                'id',
+                'credit_id'
+            );
+    }
+
+    public function address(): HasOne
+    {
+        return $this
+            ->hasOne(
+                Address::class,
+                'id',
+                'address_id'
+            );
+    }
+
+    public function phone(): HasOne
+    {
+        return $this
+            ->hasOne(
+                Phone::class,
+                'id',
+                'phone_id'
+            );
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this
+            ->belongsTo(
+                EmailConfirmation::class,
+                'id'
+            );
+    }
 }
