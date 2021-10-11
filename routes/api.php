@@ -35,6 +35,10 @@ Route::put('user/{id}/email-phone', [
     UserController::class, 'updateEmailAndPhone'
 ]);
 
+Route::put('user/{id}/code', [
+    UserController::class, 'verifyCode'
+]);
+
 Route::delete('user/{id}', [
     UserController::class, 'destroy'
 ]);

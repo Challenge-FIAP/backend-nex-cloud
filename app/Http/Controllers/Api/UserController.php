@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\User\StoreUserService;
 use App\Services\User\UpdateDocumentAndNameService;
 use App\Services\User\UpdateEmailAndPhone;
+use App\Services\User\VerifyEmailCodeService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
@@ -106,6 +107,35 @@ class UserController extends Controller
         Request $request,
         string $id,
         UpdateEmailAndPhone $service
+    ): UserResource | JsonResponse {
+        $service
+            ->handle($request, $id);
+
+        if (!$service->status()) {
+            return response()->json(
+                [
+                    'code'      => 400,
+                    'message'   => $service->getMessage(),
+                ],
+                400
+            );
+        }
+
+        $user = $service->getUser();
+
+        return new UserResource(
+            $user,
+            $user->document ?? null,
+            $user->address ?? null,
+            $user->credit ?? null,
+            $user->phone ?? null
+        );
+    }
+
+    public function verifyCode(
+        Request $request,
+        string $id,
+        VerifyEmailCodeService $service
     ): UserResource | JsonResponse {
         $service
             ->handle($request, $id);
