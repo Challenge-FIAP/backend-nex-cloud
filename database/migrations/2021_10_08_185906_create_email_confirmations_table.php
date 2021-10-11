@@ -16,7 +16,7 @@ class CreateEmailConfirmationsTable extends Migration
         Schema::create('email_confirmations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->unique();
-            $table->string('code')->unique();
+            $table->string('code');
             $table->boolean('valid')->default(false);
             $table->timestamps();
 

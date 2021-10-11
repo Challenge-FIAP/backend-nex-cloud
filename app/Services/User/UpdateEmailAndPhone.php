@@ -2,6 +2,7 @@
 
 namespace App\Services\User;
 
+use App\Models\EmailConfirmation;
 use App\Models\Phone;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ class UpdateEmailAndPhone extends Message
 
     private User $user;
     private Phone $phone;
+    private EmailConfirmation $emailConfirmation;
 
     public function handle(
         Request $request,
@@ -53,7 +55,9 @@ class UpdateEmailAndPhone extends Message
         }
 
         $this
-            ->persistUser();
+            ->persistUser()
+            ->makeValidationCode()
+            ->sendmail();
     }
 
     private function setUser(): void
@@ -91,10 +95,28 @@ class UpdateEmailAndPhone extends Message
         ]);
     }
 
-    private function persistUser(): void
+    private function persistUser(): UpdateEmailAndPhone
     {
         $this->user->phone_id = $this->phone->id;
         $this->user->save();
+
+        return $this;
+    }
+
+    private function makeValidationCode(): UpdateEmailAndPhone
+    {
+        $this->emailConfirmation = EmailConfirmation::create([
+            'user_id'  => $this->user->id,
+            //'code'  => substr(rand(1, 1000000000), 0, 5),
+            'code'  => 12345
+        ]);
+
+        return $this;
+    }
+
+    private function sendMail(): void
+    {
+        //
     }
 
     public function getUser()
