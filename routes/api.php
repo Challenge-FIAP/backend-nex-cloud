@@ -39,6 +39,10 @@ Route::put('user/{id}/code', [
     UserController::class, 'verifyCode'
 ]);
 
+Route::put('user/{id}/password', [
+    UserController::class, 'updatePassword'
+]);
+
 Route::delete('user/{id}', [
     UserController::class, 'destroy'
 ]);

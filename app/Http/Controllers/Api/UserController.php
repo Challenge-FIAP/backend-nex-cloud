@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\User\StoreUserService;
 use App\Services\User\UpdateDocumentAndNameService;
 use App\Services\User\UpdateEmailAndPhone;
+use App\Services\User\UpdatePasswordService;
 use App\Services\User\VerifyEmailCodeService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -161,14 +162,32 @@ class UserController extends Controller
         );
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        //
+    public function updatePassword(
+        Request $request,
+        string $id,
+        UpdatePasswordService $service
+    ): UserResource|JsonResponse {
+        $service
+            ->handle($request, $id);
+
+        if (!$service->status()) {
+            return response()->json(
+                [
+                    'code'      => 400,
+                    'message'   => $service->getMessage(),
+                ],
+                400
+            );
+        }
+
+        $user = $service->getUser();
+
+        return new UserResource(
+            $user,
+            $user->document ?? null,
+            $user->address ?? null,
+            $user->credit ?? null,
+            $user->phone ?? null
+        );
     }
 }
