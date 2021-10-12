@@ -103,6 +103,15 @@ class UpdateDocumentAndNameService extends Message
             return;
         }
 
+        if (!is_null($this->user->document)) {
+            $this->document = $this->user->document;
+            $this->document->number = $validadeResult['number'];
+            $this->document->type_person = $validadeResult['type'];
+            $this->document->save();
+
+            return;
+        }
+
         $this->document = Document::create([
             'number'          => $validadeResult['number'],
             'type_person'     => $validadeResult['type'],
