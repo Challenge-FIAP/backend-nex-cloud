@@ -56,7 +56,7 @@ class VerifyEmailCodeService extends Message
     {
         $verificationCode = EmailConfirmation::firstWhere('user_id', $this->user->id);
 
-        if (!$this->request->code === $verificationCode->code) {
+        if ($this->request->code !== $verificationCode->code) {
             $this->setError('Código inválido');
             return;
         }

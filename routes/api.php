@@ -46,3 +46,7 @@ Route::put('user/{id}/password', [
 Route::delete('user/{id}', [
     UserController::class, 'destroy'
 ]);
+
+Route::delete('users/{id}', [
+    UserController::class, 'destroy'
+]);
