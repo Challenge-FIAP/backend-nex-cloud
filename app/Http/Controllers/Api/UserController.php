@@ -10,12 +10,8 @@ use App\Services\User\UpdateDocumentAndNameService;
 use App\Services\User\UpdateEmailAndPhone;
 use App\Services\User\UpdatePasswordService;
 use App\Services\User\VerifyEmailCodeService;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
@@ -34,7 +30,7 @@ class UserController extends Controller
     public function store(
         Request $request,
         StoreUserService $service
-    ): UserResource | Response | Application | ResponseFactory {
+    ) {
         $service
             ->handle($request);
 
@@ -53,7 +49,7 @@ class UserController extends Controller
         );
     }
 
-    public function show($id): UserResource | JsonResponse
+    public function show($id)
     {
         $user = User::firstWhere('uid', $id);
         if (is_null($user)) {
@@ -79,7 +75,7 @@ class UserController extends Controller
         Request $request,
         string $id,
         UpdateDocumentAndNameService $service
-    ): UserResource | JsonResponse {
+    ) {
         $service
             ->handle($request, $id);
 
@@ -108,7 +104,7 @@ class UserController extends Controller
         Request $request,
         string $id,
         UpdateEmailAndPhone $service
-    ): UserResource | JsonResponse {
+    ) {
         $service
             ->handle($request, $id);
 
@@ -137,7 +133,7 @@ class UserController extends Controller
         Request $request,
         string $id,
         VerifyEmailCodeService $service
-    ): UserResource | JsonResponse {
+    ) {
         $service
             ->handle($request, $id);
 
@@ -166,7 +162,7 @@ class UserController extends Controller
         Request $request,
         string $id,
         UpdatePasswordService $service
-    ): UserResource|JsonResponse {
+    ) {
         $service
             ->handle($request, $id);
 
