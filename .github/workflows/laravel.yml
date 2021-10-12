@@ -19,12 +19,8 @@ jobs:
         run: composer install --optimize-autoloader --no-dev
       - name: Generate key
         run: php artisan key:generate
-      - name: Cacheando configurações
-        run: php artisan config:cache
-      - name: Cacheando rotas
-        run: php artisan route:cache
-      - name: Cacheando views
-        run: php artisan view:cache
+      - name: Remove Vendor
+        run: rm -rf vendor
       - name: FTP Deployment
         uses: airvzxf/ftp-deployment-action@latest
         with:
