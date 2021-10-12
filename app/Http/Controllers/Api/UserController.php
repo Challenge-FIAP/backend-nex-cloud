@@ -190,4 +190,15 @@ class UserController extends Controller
             $user->phone ?? null
         );
     }
+
+    public function destroy($id): JsonResponse
+    {
+        $user = User::firstWhere('uid', $id);
+        $user->delete();
+
+        return response()->json([
+            'status' => 200,
+            'message'   => 'User ' . $id . ' deletado com sucesso.'
+        ]);
+    }
 }
