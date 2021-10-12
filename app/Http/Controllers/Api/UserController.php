@@ -10,6 +10,7 @@ use App\Services\User\UpdateDocumentAndNameService;
 use App\Services\User\UpdateEmailAndPhone;
 use App\Services\User\UpdatePasswordService;
 use App\Services\User\VerifyEmailCodeService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
