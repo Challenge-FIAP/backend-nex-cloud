@@ -62,7 +62,7 @@ class UserController extends Controller
                     'code'      => 400,
                     'message'   => 'Usuário inválido',
                 ],
-                400
+                206
             );
         }
 
@@ -89,7 +89,7 @@ class UserController extends Controller
                     'code'      => 400,
                     'message'   => $service->getMessage(),
                 ],
-                400
+                206
             );
         }
 
@@ -118,7 +118,7 @@ class UserController extends Controller
                     'code'      => 400,
                     'message'   => $service->getMessage(),
                 ],
-                400
+                206
             );
         }
 
@@ -147,7 +147,7 @@ class UserController extends Controller
                     'code'      => 400,
                     'message'   => $service->getMessage(),
                 ],
-                400
+                206
             );
         }
 
@@ -176,7 +176,7 @@ class UserController extends Controller
                     'code'      => 400,
                     'message'   => $service->getMessage(),
                 ],
-                400
+                206
             );
         }
 
@@ -199,7 +199,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => 400,
                 'message'   => 'Usuário ' . $id . ' não encontrado.'
-            ], 400);
+            ], 206);
         }
 
         $user->delete();
