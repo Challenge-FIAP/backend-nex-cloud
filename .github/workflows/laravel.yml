@@ -5,8 +5,8 @@ on:
     branches: [ main ]
 
 jobs:
-  tests:
-    name: CI -> Test and deploy
+  build:
+    name: CI -> Buildando projeto
     runs-on: ubuntu-latest
     steps:
       - uses: shivammathur/setup-php@b7d1d9c9a92d8d8463ce36d7f60da34d461724f8
@@ -16,11 +16,20 @@ jobs:
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
       - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        run: composer install --optimize-autoloader --no-dev
       - name: Generate key
         run: php artisan key:generate
-      - name: Remove Vendor
-        run: rm -rf vendor
+      - name: Cacheando configurações
+        run: php artisan config:cache
+      - name: Cacheando rotas
+        run: php artisan route:cache
+      - name: Cacheando views
+        run: php artisan view:cache
+  deploy:
+    name: CI -> Deployando
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: FTP Deployment
         uses: airvzxf/ftp-deployment-action@latest
         with:
