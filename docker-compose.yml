@@ -2,97 +2,102 @@ version: '3.8'
 
 # Docker Networks
 networks:
-    bluebenx:
-        driver: bridge
+  blue:
+    driver: bridge
+
+# Volumes
+volumes:
+  dbdata:
+    driver: local
 
 # Workflow
 services:
-    nginx:
-        build:
-            context: .
-            dockerfile: ./docker/nginx/Dockerfile
-        container_name: bluebenx-nginx
-        ports:
-            - "80:80"
-        volumes:
-            - ./:/var/www/html:delegated
-        depends_on:
-            - php
-            - mysql
-        networks:
-            - bluebenx
+  nginx:
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    container_name: blue-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www/html:delegated
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - blue
 
-    mysql:
-        image: mysql:5.7.29
-        container_name: bluebenx-mysql
-        ports:
-            - "3306:3306"
-        environment:
-            MYSQL_DATABASE: bluebenx
-            MYSQL_USER: bluebenx_adm
-            MYSQL_PASSWORD: "7cH#fXH{b~V/AUZb,&PmX4CS%V`%jx"
-            MYSQL_ROOT_PASSWORD: "7cH#fXH{b~V/AUZb,&PmX4CS%V`%jx"
-        volumes:
-            - ./mysql:/var/lib/mysql/
-        networks:
-            - bluebenx
+  mysql:
+    image: mysql:5.7.29
+    container_name: blue-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: blue
+      MYSQL_USER: blue_user
+      MYSQL_PASSWORD: "7cH#fXH{b~V/AUZb,&PmX4CS%V`%jx"
+      MYSQL_ROOT_PASSWORD: "7cH#fXH{b~V/AUZb,&PmX4CS%V`%jx"
+    volumes:
+      - ./mysql:/var/lib/mysql/
+    networks:
+      - blue
 
-    adminer:
-        image: adminer
-        container_name: bluebenx-adminer
-        ports:
-            - "8080:8080"
-        depends_on:
-            - mysql
-        networks:
-            - bluebenx
+  adminer:
+    image: adminer
+    container_name: blue-adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - blue
 
-    php:
-        build:
-            context: .
-            dockerfile: ./docker/php/Dockerfile
-        container_name: bluebenx-php
-        volumes:
-            - ./:/var/www/html:delegated
-        ports:
-            - "9000:9000"
-        networks:
-            - bluebenx
+  php:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    container_name: blue-php
+    volumes:
+      - ./:/var/www/html:delegated
+    ports:
+      - "9000:9000"
+    networks:
+      - blue
 
-    composer:
-        build:
-            context: .
-            dockerfile: ./docker/php/composer/Dockerfile
-        container_name: bluebenx-composer
-        volumes:
-            - ./:/var/www/html
-        working_dir: /var/www/html
-        depends_on:
-            - php
-        user: laravel
-        networks:
-            - bluebenx
-        entrypoint: ['composer', '--ignore-platform-reqs']
+  composer:
+    build:
+      context: .
+      dockerfile: ./docker/php/composer/Dockerfile
+    container_name: blue-composer
+    volumes:
+      - ./:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - php
+    user: laravel
+    networks:
+      - blue
+    entrypoint: ['composer', '--ignore-platform-reqs']
 
-    npm:
-        image: node:15.0.1
-        container_name: bluebenx-npm
-        volumes:
-            - ./:/var/www/html
-        working_dir: /var/www/html
-        entrypoint: ['npm']
+  npm:
+    image: node:15.0.1
+    container_name: blue-npm
+    volumes:
+      - ./:/var/www/html
+    working_dir: /var/www/html
+    entrypoint: ['npm']
 
-    artisan:
-        build:
-            context: .
-            dockerfile: ./docker/php/Dockerfile
-        container_name: bluebenx-artisan
-        volumes:
-            - ./:/var/www/html:delegated
-        depends_on:
-            - mysql
-        working_dir: /var/www/html
-        user: laravel
-        entrypoint: ['php', '/var/www/html/artisan']
-        networks:
-            - bluebenx
+  artisan:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    container_name: blue-artisan
+    volumes:
+      - ./:/var/www/html:delegated
+    depends_on:
+      - mysql
+    working_dir: /var/www/html
+    user: laravel
+    entrypoint: ['php', '/var/www/html/artisan']
+    networks:
+      - blue
