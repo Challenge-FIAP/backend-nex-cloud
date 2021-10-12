@@ -194,6 +194,14 @@ class UserController extends Controller
     public function destroy($id): JsonResponse
     {
         $user = User::firstWhere('uid', $id);
+
+        if (is_null($user)) {
+            return response()->json([
+                'status' => 400,
+                'message'   => 'Usuário ' . $id . ' não encontrado.'
+            ], 400);
+        }
+
         $user->delete();
 
         return response()->json([
